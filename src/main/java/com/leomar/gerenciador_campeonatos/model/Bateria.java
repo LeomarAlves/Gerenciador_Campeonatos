@@ -1,6 +1,7 @@
 package com.leomar.gerenciador_campeonatos.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Bateria {
@@ -9,34 +10,25 @@ public class Bateria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome; // Ex: "Bateria 1", "Bateria 2"
+    private String nome; // Ex: "Bateria 1 - Etapa 1"
+    private LocalDateTime dataHora;
 
-    // Muitas Baterias pertencem a Um Campeonato
+    // A BLINDAGEM: Cada bateria pertence a um campeonato específico
     @ManyToOne
-    @JoinColumn(name = "campeonato_id") // Cria a coluna da chave estrangeira no banco
+    @JoinColumn(name = "campeonato_id", nullable = false)
     private Campeonato campeonato;
 
-    public Long getId() {
-        return id;
-    }
+    // --- GETTERS E SETTERS ---
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public LocalDateTime getDataHora() { return dataHora; }
+    public void setDataHora(LocalDateTime dataHora) { this.dataHora = dataHora; }
 
-    public Campeonato getCampeonato() {
-        return campeonato;
-    }
-
-    public void setCampeonato(Campeonato campeonato) {
-        this.campeonato = campeonato;
-    }
+    public Campeonato getCampeonato() { return campeonato; }
+    public void setCampeonato(Campeonato campeonato) { this.campeonato = campeonato; }
 }

@@ -1,7 +1,7 @@
 package com.leomar.gerenciador_campeonatos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,11 +13,19 @@ public class Campeonato {
 
     private String nome;
 
-    // Um Campeonato tem Muitas Baterias
-    // O 'mappedBy' avisa o JPA que a chave estrangeira está na classe Bateria
-    // CascadeType.ALL significa que se apagarmos o campeonato, as baterias somem junto
+    // A barreira contra o loop infinito
+    @JsonIgnore
     @OneToMany(mappedBy = "campeonato", cascade = CascadeType.ALL)
-    private List<Bateria> baterias = new ArrayList<>();
+    private List<Categoria> categorias;
+
+    // A barreira contra o loop infinito
+    @JsonIgnore
+    @OneToMany(mappedBy = "campeonato", cascade = CascadeType.ALL)
+    private List<Bateria> baterias;
+
+    // ==========================================
+    // GETTERS E SETTERS (Obrigatórios para o JSON funcionar!)
+    // ==========================================
 
     public Long getId() {
         return id;
@@ -33,6 +41,14 @@ public class Campeonato {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public List<Categoria> getCategorias() {
+        return categorias;
+    }
+
+    public void setCategorias(List<Categoria> categorias) {
+        this.categorias = categorias;
     }
 
     public List<Bateria> getBaterias() {

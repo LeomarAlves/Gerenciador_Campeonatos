@@ -19,9 +19,9 @@ public class BateriaController {
         this.bateriaRepository = bateriaRepository;
     }
 
-    @GetMapping
-    public List<Bateria> listarTodas() {
-        return bateriaRepository.findAll();
+    @GetMapping("/campeonato/{campeonatoId}")
+    public List<Bateria> listarPorCampeonato(@PathVariable Long campeonatoId) {
+        return bateriaRepository.findByCampeonatoId(campeonatoId);
     }
 
     @PostMapping

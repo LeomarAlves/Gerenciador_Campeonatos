@@ -53,9 +53,16 @@
         <button id="btn-voltar-home" class="btn" style="margin-bottom: 1rem; background-color: var(--cor-borda);">⬅ Voltar aos Campeonatos</button>
         <div class="header-acoes">
             <h2 id="titulo-campeonato-ativo">Campeonato...</h2>
-            <button id="btn-ir-baterias" class="btn" style="background-color: #27ae60; color: white;">
-                🏁 Ir para Corridas (Baterias) ➔
-            </button>
+
+            <div style="display: flex; gap: 1rem;">
+                <button id="btn-gerar-pdf" class="btn btn-primario" style="background-color: #c0392b;">
+                    🏆 Ver Classificação Final
+                </button>
+
+                <button id="btn-ir-baterias" class="btn" style="background-color: #27ae60; color: white;">
+                    🏁 Ir para Corridas (Baterias) ➔
+                </button>
+            </div>
         </div>
         <div class="card card-form" style="margin-bottom: 2rem;">
             <h3>Criar Nova Categoria</h3>
@@ -159,6 +166,27 @@
             <table class="tabela-pilotos">
                 <thead><tr><th>Pos. Geral</th><th>Kart</th><th>Piloto</th><th>Categoria</th><th>Pontos Recebidos</th></tr></thead>
                 <tbody id="tabela-resultados-corpo"></tbody>
+            </table>
+        </div>
+    </div>
+    <div id="tela-classificacao" class="oculta">
+        <button id="btn-voltar-dash-classificacao" class="btn" style="margin-bottom: 1rem; background-color: var(--cor-borda);">⬅ Voltar ao Painel</button>
+
+        <div class="header-acoes">
+            <h2>🏆 Classificação Final do Campeonato</h2>
+            <button id="btn-imprimir-pdf" class="btn" style="background-color: #c0392b; color: white;">
+                🖨️ Imprimir / Salvar PDF
+            </button>
+        </div>
+
+        <div class="card" id="area-impressao">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 id="titulo-impressao-campeonato">Nome do Campeonato</h1>
+                <p>Resultado Oficial</p>
+            </div>
+            <table class="tabela-pilotos">
+                <thead><tr><th>Posição</th><th>Kart</th><th>Piloto</th><th>Categoria</th><th>Total de Pontos</th></tr></thead>
+                <tbody id="tabela-classificacao-corpo"></tbody>
             </table>
         </div>
     </div>

@@ -1,7 +1,9 @@
 package com.leomar.gerenciador_campeonatos.controller;
 
+import com.leomar.gerenciador_campeonatos.dto.ClassificacaoDTO;
 import com.leomar.gerenciador_campeonatos.model.Campeonato;
 import com.leomar.gerenciador_campeonatos.repository.CampeonatoRepository;
+import com.leomar.gerenciador_campeonatos.service.PontuacaoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,39 +11,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/campeonatos")
+@CrossOrigin(origins = "*") // Permite que o nosso HTML converse com o Java
 public class CampeonatoController {
 
     private final CampeonatoRepository campeonatoRepository;
+    private final PontuacaoService pontuacaoService; // A variável que estava dando erro
 
-    // Injeção de dependência
-    public CampeonatoController(CampeonatoRepository campeonatoRepository) {
+    // O CONSTRUTOR: É aqui que o Spring Boot injeta os serviços e resolve o erro!
+    public CampeonatoController(CampeonatoRepository campeonatoRepository, PontuacaoService pontuacaoService) {
         this.campeonatoRepository = campeonatoRepository;
+        this.pontuacaoService = pontuacaoService;
     }
 
-    // 1. Rota GET: Lista todos os campeonatos cadastrados
-    // O Frontend vai chamar essa rota para montar a tela inicial
+    // Rota para listar os campeonatos na tela inicial
     @GetMapping
     public List<Campeonato> listarTodos() {
         return campeonatoRepository.findAll();
     }
 
-    // 2. Rota POST: Recebe os dados do Frontend e salva no SQLite
-    // A anotação @RequestBody diz ao Spring para converter o JSON que vem do Front em um objeto Java
+    // Rota para criar um novo campeonato
     @PostMapping
     public ResponseEntity<Campeonato> criarCampeonato(@RequestBody Campeonato novoCampeonato) {
-        Campeonato campeonatoSalvo = campeonatoRepository.save(novoCampeonato);
-
-        // Retorna o status 201 (Created) avisando o Front que deu tudo certo
-        return ResponseEntity.status(HttpStatus.CREATED).body(campeonatoSalvo);
+        Campeonato salvo = campeonatoRepository.save(novoCampeonato);
+        return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
-    // 3. Rota GET por ID: Busca os detalhes de apenas um campeonato
-    @GetMapping("/{id}")
-    public ResponseEntity<Campeonato> buscarPorId(@PathVariable Long id) {
-        return campeonatoRepository.findById(id)
-                .map(campeonato -> ResponseEntity.ok().body(campeonato))
-                .orElse(ResponseEntity.notFound().build()); // Retorna erro 404 se não achar
+    // A ROTA DO PÓDIO (Classificação Final)
+    @GetMapping("/{id}/classificacao")
+    public ResponseEntity<List<ClassificacaoDTO>> obterClassificacao(@PathVariable Long id) {
+        return ResponseEntity.ok(pontuacaoService.gerarClassificacaoFinal(id));
     }
 }

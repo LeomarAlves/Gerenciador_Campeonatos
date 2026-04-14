@@ -96,5 +96,5 @@ public class PontuacaoService {
 
         // 5. Retorna a lista pronta para o Controller mandar pro Frontend e gerar o PDF
         return classificacao;
-    }
+    }''
 }

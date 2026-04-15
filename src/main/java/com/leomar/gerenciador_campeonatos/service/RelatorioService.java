@@ -14,7 +14,7 @@ import java.util.Map;
 public class RelatorioService {
 
     public byte[] gerarRelatorioFinalPdf(String nomeCampeonato, Map<String, List<ClassificacaoDTO>> relatorioMisto) {
-        // Configuramos a página para A4 Deitada (Landscape) para caberem várias colunas de baterias
+
         Document document = new Document(PageSize.A4.rotate());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -24,7 +24,7 @@ public class RelatorioService {
 
             // 1. O Título do Documento
             Font fontTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22, BaseColor.BLACK);
-            Paragraph titulo = new Paragraph("🏆 Resultado Oficial: " + nomeCampeonato, fontTitulo);
+            Paragraph titulo = new Paragraph(nomeCampeonato + "\n" + "Resultado Final: " , fontTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
             titulo.setSpacingAfter(20);
             document.add(titulo);
@@ -98,7 +98,6 @@ public class RelatorioService {
         return out.toByteArray();
     }
 
-    // Método auxiliar para pintar o fundo do cabeçalho de cinza escuro
     private void addCabecalho(PdfPTable table, String texto, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(texto, font));
         cell.setBackgroundColor(BaseColor.DARK_GRAY);

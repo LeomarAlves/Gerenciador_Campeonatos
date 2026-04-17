@@ -9,13 +9,13 @@
 <body>
 
 <header class="navbar">
-    <div class="logo">🏁 Gerenciador de Kart</div>
+    <div class="logo">🏁 Gerenciador de Campeonatos</div>
 </header>
 
 <main class="container">
 
     <div id="tela-home">
-        <div class="card card-form" style="margin-bottom: 2rem; background-color: #fff3cd; border-left: 5px solid #f1c40f;">
+        <div class="card card-form" style="margin-bottom: 2rem;">
             <h3>Criar Regra de Pontuação</h3>
             <form id="form-tabela" style="display: flex; gap: 1rem; align-items: flex-end;">
                 <div>
@@ -26,7 +26,7 @@
                     <label for="valores-tabela">Pontos do 1º ao último (separados por vírgula):</label>
                     <input type="text" id="valores-tabela" placeholder="Ex: 25, 18, 15, 12, 10, 8, 6, 4, 2, 1" required>
                 </div>
-                <button type="submit" class="btn btn-primario" style="background-color: #f39c12; margin-bottom: 1.2rem;">Salvar Regra</button>
+                <button type="submit" class="btn btn-primario" style="background-color: #e74c3c; margin-bottom: 1.2rem;">Salvar Regra</button>
             </form>
         </div>
 
@@ -56,12 +56,8 @@
             <h2 id="titulo-campeonato-ativo">Campeonato...</h2>
 
             <div style="display: flex; gap: 1rem;">
-                <button id="btn-gerar-pdf" class="btn btn-primario" style="background-color: #c0392b;">
-                    🏆 Ver Classificação Final
-                </button>
-
                 <button id="btn-ir-baterias" class="btn" style="background-color: #27ae60; color: white;">
-                    🏁 Ir para Corridas (Baterias) ➔
+                    🏁 Ir para Baterias ➔
                 </button>
             </div>
         </div>

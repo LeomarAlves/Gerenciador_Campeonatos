@@ -7,6 +7,7 @@ import java.util.Map;
 public class ClassificacaoDTO {
     private Piloto piloto;
     private Integer totalPontos;
+    private boolean recebeuPontoExtra;
 
     // Guarda o histórico: Ex: "Bateria 1" -> "25", "Bateria 2" -> "NC"
     private Map<String, String> resultadosPorBateria = new LinkedHashMap<>();
@@ -19,6 +20,9 @@ public class ClassificacaoDTO {
 
     public Integer getTotalPontos() { return totalPontos; }
     public void setTotalPontos(Integer totalPontos) { this.totalPontos = totalPontos; }
+
+    public boolean isRecebeuPontoExtra() { return recebeuPontoExtra; }
+    public void setRecebeuPontoExtra(boolean recebeuPontoExtra) { this.recebeuPontoExtra = recebeuPontoExtra; }
 
     public Map<String, String> getResultadosPorBateria() { return resultadosPorBateria; }
     public void setResultadosPorBateria(Map<String, String> resultadosPorBateria) { this.resultadosPorBateria = resultadosPorBateria; }

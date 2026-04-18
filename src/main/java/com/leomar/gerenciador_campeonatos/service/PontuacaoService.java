@@ -43,15 +43,20 @@ public class PontuacaoService {
     private void atribuirPontosPorCategoria(List<ResultadoBateria> resultados, TabelaPontuacao tabela) {
         for (int i = 0; i < resultados.size(); i++) {
             ResultadoBateria resultado = resultados.get(i);
-            
+
+            // Pega o ponto extra apenas 1 vez (protegido contra null)
+            int extras = (resultado.getPontosExtras() != null) ? resultado.getPontosExtras() : 0;
+
             if (resultado.isNc()) {
-                resultado.setPontos(0);
+                // NC zera a posição, mas mantém os extras
+                resultado.setPontos(extras);
                 continue;
             }
 
             int posicaoNaCategoria = i + 1;
-            int pontos = tabela.getPontosPorPosicao().getOrDefault(posicaoNaCategoria, 0);
-            resultado.setPontos(pontos);
+            int pontosPosicao = tabela.getPontosPorPosicao().getOrDefault(posicaoNaCategoria, 0);
+
+            resultado.setPontos(pontosPosicao + extras);
         }
     }
 
@@ -87,15 +92,22 @@ public class PontuacaoService {
         dto.setPiloto(piloto);
         
         int total = 0;
+        boolean ganhouExtras = false;
+
         for (ResultadoBateria r : resultadosDoPiloto) {
             int pontos = (r.getPontos() != null) ? r.getPontos() : 0;
             total += pontos;
+
+            if (r.getPontosExtras() != null && r.getPontosExtras() > 0) {
+                ganhouExtras = true;
+            }
 
             String valorExibicao = r.isNc() ? "NC" : String.valueOf(pontos);
             dto.getResultadosPorBateria().put(r.getBateria().getNome(), valorExibicao);
         }
 
         dto.setTotalPontos(total);
+        dto.setRecebeuPontoExtra(ganhouExtras);
         return dto;
     }
 

@@ -11,6 +11,7 @@ public interface ResultadoBateriaRepository extends JpaRepository<ResultadoBater
     // O método que o nosso PontuacaoService usa!
     List<ResultadoBateria> findByBateriaIdOrderByPosicaoChegadaAsc(Long bateriaId);
     List<ResultadoBateria> findByBateriaCampeonatoId(Long campeonatoId);
-
     List<ResultadoBateria> findByBateriaIdIn(List<Long> bateriaIds);
+
+    ResultadoBateria findByBateriaIdAndPilotoId(Long bateriaId, Long pilotoId);
 }

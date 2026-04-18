@@ -1,7 +1,3 @@
-/**
- * Gerenciador de Campeonatos de Kart - Módulo Frontend (Refatorado)
- */
-
 const API_BASE_URL = 'http://localhost:8080/api';
 
 // Estado global da aplicação
@@ -424,18 +420,21 @@ async function salvarResultado(e) {
     const pilotoId = document.getElementById('select-piloto-resultado').value;
     const posicao = document.getElementById('posicao-chegada').value;
     const marcouNc = document.getElementById('checkbox-nc').checked;
+    const extras = document.getElementById('pontos-extras').value;
 
     const dados = {
         bateria: { id: bateriaAtivaId },
         piloto: { id: parseInt(pilotoId) },
         posicaoChegada: parseInt(posicao),
-        nc: marcouNc
+        nc: marcouNc,
+        pontosExtras: parseInt(extras) || 0 // Trata campos vazios/NaN
     };
 
     try {
         await apiFetch('/resultados', { method: 'POST', body: JSON.stringify(dados) });
         document.getElementById('posicao-chegada').value = '';
         document.getElementById('checkbox-nc').checked = false;
+        document.getElementById('pontos-extras').value = '0';
         carregarResultados();
     } catch (e) { alert('Erro ao salvar resultado.'); }
 }
@@ -591,7 +590,7 @@ function gerarHtmlTabelaCategoria(nomeCat, pilotos, nomesBaterias) {
                 <td>🏎️ ${p.piloto.numeroKart}</td>
                 <td><strong>${p.piloto.nome}</strong></td>
                 ${colunasBatData}
-                <td class="col-total">${p.totalPontos} pts</td>
+                <td class="col-total">${p.totalPontos} pts ${p.recebeuPontoExtra ? '<span style="color: red; font-weight: bold;">*</span>' : ''}</td>
                 <td class="no-print">
                     <button class="btn-ajuste" onclick="moverPosicaoMista('${nomeCat}', ${idx}, -1)">🔼</button>
                     <button class="btn-ajuste" onclick="moverPosicaoMista('${nomeCat}', ${idx}, 1)">🔽</button>
@@ -599,7 +598,7 @@ function gerarHtmlTabelaCategoria(nomeCat, pilotos, nomesBaterias) {
             </tr>`;
     });
 
-    return html + `</tbody></table></div>`;
+    return html + `</tbody></table><p style="font-size: 0.85em; color: #555; margin-top: 5px;">* pontuação extra conforme regulamento</p></div>`;
 }
 
 function moverPosicaoMista(nomeCategoria, index, direcao) {

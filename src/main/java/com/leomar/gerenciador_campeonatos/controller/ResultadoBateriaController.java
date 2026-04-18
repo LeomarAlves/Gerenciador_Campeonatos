@@ -29,6 +29,24 @@ public class ResultadoBateriaController {
 
     @PostMapping
     public ResponseEntity<ResultadoBateria> registrarResultado(@RequestBody ResultadoBateria novoResultado) {
+
+        ResultadoBateria existente = resultadoRepository.findByBateriaIdAndPilotoId(
+                novoResultado.getBateria().getId(),
+                novoResultado.getPiloto().getId()
+        );
+
+        if (existente != null) {
+            // Atualiza os dados do registro existente para evitar duplicatas
+            existente.setPosicaoChegada(novoResultado.getPosicaoChegada());
+            existente.setNc(novoResultado.isNc());
+
+            existente.setPontosExtras(novoResultado.getPontosExtras());
+
+            ResultadoBateria atualizado = resultadoRepository.save(existente);
+            return ResponseEntity.ok(atualizado);
+        }
+
+        // Se não existe, cria um novo
         ResultadoBateria salvo = resultadoRepository.save(novoResultado);
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }

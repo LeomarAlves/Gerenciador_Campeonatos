@@ -18,6 +18,7 @@ public class RelatorioService {
     private static final Font FONT_CABECALHO = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, BaseColor.WHITE);
     private static final Font FONT_LINHA = FontFactory.getFont(FontFactory.HELVETICA, 11, BaseColor.BLACK);
     private static final Font FONT_NC = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, BaseColor.RED);
+    private static final Font FONT_LEGENDA = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 9, BaseColor.DARK_GRAY);
 
     public byte[] gerarRelatorioFinalPdf(String nomeCampeonato, Map<String, List<ClassificacaoDTO>> relatorioMisto) {
         Document document = new Document(PageSize.A4.rotate());
@@ -65,6 +66,10 @@ public class RelatorioService {
         preencherDadosPilotos(table, pilotos, nomesBaterias);
 
         document.add(table);
+
+        Paragraph legenda = new Paragraph("* pontuação extra conforme regulamento", FONT_LEGENDA);
+        legenda.setSpacingBefore(5);
+        document.add(legenda);
     }
 
     private void criarCabecalho(PdfPTable table, List<String> nomesBaterias) {
@@ -91,7 +96,8 @@ public class RelatorioService {
                 table.addCell(cell);
             }
 
-            PdfPCell cellTotal = new PdfPCell(new Phrase(dto.getTotalPontos() + " pts", FONT_LINHA));
+            String textoTotal = dto.getTotalPontos() + " pts" + (dto.isRecebeuPontoExtra() ? " *" : "");
+            PdfPCell cellTotal = new PdfPCell(new Phrase(textoTotal, FONT_LINHA));
             cellTotal.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(cellTotal);
             pos++;

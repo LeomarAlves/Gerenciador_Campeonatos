@@ -37,22 +37,21 @@ public class RelatorioController {
         return ResponseEntity.ok(resultado);
     }
 
-    // 2. Rota para baixar o PDF Oficial
-    @GetMapping("/etapa/pdf")
+    // 2. Rota para gerar o PDF Oficial a partir dos dados ordenados no Frontend
+    @PostMapping("/etapa/pdf")
     public ResponseEntity<byte[]> baixarRelatorioPdf(
-            @RequestParam List<Long> bateriasIds,
+            @RequestBody Map<String, List<ClassificacaoDTO>> dadosOrdenados,
             @RequestParam String nomeCampeonato) {
 
-        if (bateriasIds == null || bateriasIds.isEmpty()) {
+        if (dadosOrdenados == null || dadosOrdenados.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        Map<String, List<ClassificacaoDTO>> relatorioMisto = pontuacaoService.gerarRelatorioFinalSelecionado(bateriasIds);
-        byte[] arquivoPdf = relatorioService.gerarRelatorioFinalPdf(nomeCampeonato, relatorioMisto);
+        byte[] arquivoPdf = relatorioService.gerarRelatorioFinalPdf(nomeCampeonato, dadosOrdenados);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "Resultado_Oficial_" + nomeCampeonato.replace(" ", "_") + ".pdf");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"classificacao.pdf\"");
 
         return ResponseEntity.ok()
                 .headers(headers)

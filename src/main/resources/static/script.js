@@ -28,14 +28,17 @@ function inicializarApp() {
         document.getElementById(id)?.addEventListener('submit', handler);
     });
 
-    // Mapeamento de botões de navegação
+    // Mapeamento de botões de navegação e ações
     configurarNavegacao();
 
-    // Ações de relatório e impressão
-    document.getElementById('btn-imprimir-pdf')?.addEventListener('click', baixarPdfOficial);
-    document.getElementById('btn-gerar-relatorio-selecionadas')?.addEventListener('click', gerarRelatorioDasSelecionadas);
+    // Ações de classificação e PDF (IDs atualizados conforme solicitado)
+    document.getElementById('btn-preview-pdf')?.addEventListener('click', () => gerarPdfPost('preview'));
+    document.getElementById('btn-imprimir-pdf')?.addEventListener('click', () => gerarPdfPost('download'));
+    document.getElementById('btn-implementar-mudancas')?.addEventListener('click', implementarMudancasOficiais);
+    document.getElementById('btn-ok-classificacao')?.addEventListener('click', () => mostrarTela('tela-home'));
     
-    // Alerta de legado
+    // Outras ações
+    document.getElementById('btn-gerar-relatorio-selecionadas')?.addEventListener('click', gerarRelatorioDasSelecionadas);
     document.getElementById('btn-gerar-pdf')?.addEventListener('click', () => {
         alert("Para gerar a classificação final Oficial, use a tela de 'Corridas' e selecione as baterias desejadas.");
     });
@@ -48,16 +51,14 @@ function configurarNavegacao() {
         'btn-cancelar-edicao': cancelarEdicao,
         'btn-voltar-baterias': abrirTelaBaterias,
         'btn-ir-baterias': abrirTelaBaterias,
-        'btn-calcular-pontos': calcularPontosBateria
+        'btn-calcular-pontos': calcularPontosBateria,
+        'btn-voltar-campeonato-dash': () => mostrarTela('tela-categorias'),
+        'btn-voltar-dash-classificacao': () => mostrarTela('tela-baterias')
     };
 
     Object.entries(navegação).forEach(([id, handler]) => {
         document.getElementById(id)?.addEventListener('click', handler);
     });
-
-    // Atalhos simples
-    document.getElementById('btn-voltar-campeonato-dash')?.addEventListener('click', () => mostrarTela('tela-categorias'));
-    document.getElementById('btn-voltar-dash-classificacao')?.addEventListener('click', () => mostrarTela('tela-baterias'));
 }
 
 /**
@@ -561,15 +562,23 @@ function renderizarTabelasMistas() {
 function gerarHtmlTabelaCategoria(nomeCat, pilotos, nomesBaterias) {
     const colunasBatHeader = nomesBaterias.map(n => `<th style="text-align: center;">${n}</th>`).join('');
     
+    // OBJETIVO 2: A MATEMÁTICA DO EMPATE
+    // 1. Mapa de frequências para contar quantas vezes cada pontuação aparece
+    const contagemPontos = {};
+    pilotos.forEach(p => {
+        const pts = p.totalPontos;
+        contagemPontos[pts] = (contagemPontos[pts] || 0) + 1;
+    });
+
     let html = `
         <div class="secao-classificacao">
-            <h3 class="titulo-secao-cat">🏎️ Categoria: ${nomeCat}</h3>
+            <h3 class="titulo-secao-cat"> Categoria: ${nomeCat}</h3>
             <table class="tabela-pilotos">
                 <thead>
                     <tr>
                         <th>Pos</th><th>Kart</th><th>Piloto</th>
                         ${colunasBatHeader}
-                        <th>Total</th><th class="no-print">Ajuste</th>
+                        <th>Total</th><th class="no-print col-ajuste">Ajuste</th>
                     </tr>
                 </thead>
                 <tbody>`;
@@ -584,14 +593,19 @@ function gerarHtmlTabelaCategoria(nomeCat, pilotos, nomesBaterias) {
             return `<td style="text-align: center; ${corNc}">${val}</td>`;
         }).join('');
 
+        // 2. Verifica se houve empate (contagem maior que 1)
+        const houveEmpate = contagemPontos[p.totalPontos] > 1;
+
         html += `
             <tr>
                 <td><strong style="font-size: 1.1em;">${medalha}</strong></td>
-                <td>🏎️ ${p.piloto.numeroKart}</td>
+                <td>${p.piloto.numeroKart}</td>
                 <td><strong>${p.piloto.nome}</strong></td>
                 ${colunasBatData}
-                <td class="col-total">${p.totalPontos} pts ${p.recebeuPontoExtra ? '<span style="color: red; font-weight: bold;">*</span>' : ''}</td>
-                <td class="no-print">
+                <td class="col-total" style="color: ${houveEmpate ? 'red' : 'inherit'}; font-weight: ${houveEmpate ? 'bold' : 'normal'};">
+                    ${p.totalPontos} pts ${p.recebeuPontoExtra ? '<span style="color: red; font-weight: bold;">*</span>' : ''}
+                </td>
+                <td class="no-print col-ajuste">
                     <button class="btn-ajuste" onclick="moverPosicaoMista('${nomeCat}', ${idx}, -1)">🔼</button>
                     <button class="btn-ajuste" onclick="moverPosicaoMista('${nomeCat}', ${idx}, 1)">🔽</button>
                 </td>
@@ -599,6 +613,22 @@ function gerarHtmlTabelaCategoria(nomeCat, pilotos, nomesBaterias) {
     });
 
     return html + `</tbody></table><p style="font-size: 0.85em; color: #555; margin-top: 5px;">* pontuação extra conforme regulamento</p></div>`;
+}
+
+function implementarMudancasOficiais() {
+    // Esconde as colunas e botões de ajuste (setinhas)
+    const colunasAjuste = document.querySelectorAll('.col-ajuste');
+    colunasAjuste.forEach(col => col.style.display = 'none');
+    
+    // Desativa o botão para confirmar que as mudanças foram aplicadas
+    const btn = document.getElementById('btn-implementar-mudancas');
+    if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.innerText = '✅ Mudanças Aplicadas';
+    }
+
+    alert("Ordem oficial salva! As setas de ajuste foram bloqueadas.");
 }
 
 function moverPosicaoMista(nomeCategoria, index, direcao) {
@@ -611,10 +641,30 @@ function moverPosicaoMista(nomeCategoria, index, direcao) {
     }
 }
 
-function baixarPdfOficial() {
-    const ids = Array.from(document.querySelectorAll('.chk-bateria:checked')).map(chk => chk.value).join(',');
+async function gerarPdfPost(acao) {
     const nomeCamp = document.getElementById('titulo-campeonato-ativo').innerText.replace('🏁 ', '');
     
-    const url = `${API_BASE_URL}/relatorios/etapa/pdf?bateriasIds=${ids}&nomeCampeonato=${encodeURIComponent(nomeCamp)}`;
-    window.open(url, '_blank');
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/etapa/pdf?nomeCampeonato=${encodeURIComponent(nomeCamp)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosRelatorioGlobal)
+        });
+
+        if (!response.ok) throw new Error("Erro ao gerar PDF no backend.");
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        if (acao === 'preview') {
+            window.open(url, '_blank');
+        } else {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Resultado_Oficial_${nomeCamp.replace(/\s+/g, '_')}.pdf`;
+            link.click();
+        }
+    } catch (e) {
+        alert("Erro ao processar PDF: " + e.message);
+    }
 }

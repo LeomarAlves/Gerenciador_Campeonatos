@@ -113,7 +113,6 @@ async function carregarCampeonatos() {
         campeonatos.forEach(camp => {
             const linha = `
                 <tr>
-                    <td>#${camp.id}</td>
                     <td><strong>${camp.nome}</strong></td>
                     <td>
                         <button class="btn btn-primario" onclick="abrirCampeonato(${camp.id}, '${camp.nome}')">Gerenciar ➔</button>
@@ -177,7 +176,6 @@ async function carregarCategorias() {
         categorias.forEach(cat => {
             const linha = `
                 <tr>
-                    <td>#${cat.id}</td>
                     <td><strong>${cat.nome}</strong></td>
                     <td>
                         <button class="btn btn-primario" onclick="abrirCategoria(${cat.id}, '${cat.nome}')">Ver Pilotos ➔</button>
@@ -237,14 +235,13 @@ async function carregarPilotos() {
         
         tabelaCorpo.innerHTML = '';
         if (pilotosFiltrados.length === 0) {
-            tabelaCorpo.innerHTML = `<tr><td colspan="4" class="carregando">Nenhum piloto nesta categoria.</td></tr>`;
+            tabelaCorpo.innerHTML = `<tr><td colspan="3" class="carregando">Nenhum piloto nesta categoria.</td></tr>`;
             return;
         }
 
         pilotosFiltrados.forEach(p => {
             const linha = `
                 <tr>
-                    <td>#${p.id}</td>
                     <td>🏎️ <strong>${p.numeroKart}</strong></td>
                     <td>${p.nome}</td>
                     <td>
@@ -335,10 +332,22 @@ async function carregarBaterias() {
     const tabelaCorpo = document.getElementById('tabela-baterias-corpo');
     try {
         const baterias = await apiFetch(`/baterias/campeonato/${campeonatoAtivoId}`);
+
+        // Ordenação solicitada: Categoria (1ª da lista) -> Nome da Bateria
+        baterias.sort((a, b) => {
+            const catA = (a.categorias && a.categorias.length > 0) ? a.categorias[0].nome : "";
+            const catB = (b.categorias && b.categorias.length > 0) ? b.categorias[0].nome : "";
+            
+            if (catA !== catB) {
+                return catA.localeCompare(catB);
+            }
+            return a.nome.localeCompare(b.nome);
+        });
+
         tabelaCorpo.innerHTML = '';
 
         if (baterias.length === 0) {
-            tabelaCorpo.innerHTML = `<tr><td colspan="4" class="carregando">Nenhuma corrida registrada.</td></tr>`;
+            tabelaCorpo.innerHTML = `<tr><td colspan="3" class="carregando">Nenhuma corrida registrada.</td></tr>`;
             return;
         }
 
@@ -347,7 +356,6 @@ async function carregarBaterias() {
             const linha = `
                 <tr>
                     <td style="text-align: center;"><input type="checkbox" class="chk-bateria" value="${b.id}" style="transform: scale(1.5);"></td>
-                    <td>#${b.id}</td>
                     <td><strong>${b.nome}</strong><br><small style="color: #666;">Categorias: ${nomesCats}</small></td>
                     <td>
                         <button class="btn btn-primario" onclick="abrirResultadosBateria(${b.id}, '${b.nome}')">Lançar Resultados ➔</button>

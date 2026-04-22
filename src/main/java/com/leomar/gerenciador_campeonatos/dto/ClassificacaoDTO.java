@@ -7,6 +7,7 @@ import java.util.Map;
 public class ClassificacaoDTO {
     private Piloto piloto;
     private Integer totalPontos;
+    private boolean polePosition = false;
     private boolean recebeuPontoExtra;
 
     // Guarda o histórico: Ex: "Bateria 1" -> "25", "Bateria 2" -> "NC"
@@ -23,6 +24,9 @@ public class ClassificacaoDTO {
 
     public boolean isRecebeuPontoExtra() { return recebeuPontoExtra; }
     public void setRecebeuPontoExtra(boolean recebeuPontoExtra) { this.recebeuPontoExtra = recebeuPontoExtra; }
+
+    public boolean isPolePosition() { return polePosition; }
+    public void setPolePosition(boolean polePosition) { this.polePosition = polePosition; }
 
     public Map<String, String> getResultadosPorBateria() { return resultadosPorBateria; }
     public void setResultadosPorBateria(Map<String, String> resultadosPorBateria) { this.resultadosPorBateria = resultadosPorBateria; }

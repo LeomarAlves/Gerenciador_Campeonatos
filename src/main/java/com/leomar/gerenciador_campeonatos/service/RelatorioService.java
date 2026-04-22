@@ -85,7 +85,8 @@ public class RelatorioService {
     private void preencherDadosPilotos(PdfPTable table, List<ClassificacaoDTO> pilotos, List<String> nomesBaterias) {
         int pos = 1;
         for (ClassificacaoDTO dto : pilotos) {
-            table.addCell(new PdfPCell(new Phrase(pos + "º", FONT_LINHA)));
+            String textoPosicao = pos + "º" + (dto.isPolePosition() ? " (Pole)" : "");
+            table.addCell(new PdfPCell(new Phrase(textoPosicao, FONT_LINHA)));
             table.addCell(new PdfPCell(new Phrase("#" + dto.getPiloto().getNumeroKart(), FONT_LINHA)));
             table.addCell(new PdfPCell(new Phrase(dto.getPiloto().getNome(), FONT_LINHA)));
 

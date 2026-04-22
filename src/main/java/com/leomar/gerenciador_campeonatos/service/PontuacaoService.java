@@ -93,6 +93,7 @@ public class PontuacaoService {
         
         int total = 0;
         boolean ganhouExtras = false;
+        boolean tevePole = false;
 
         for (ResultadoBateria r : resultadosDoPiloto) {
             int pontos = (r.getPontos() != null) ? r.getPontos() : 0;
@@ -102,12 +103,17 @@ public class PontuacaoService {
                 ganhouExtras = true;
             }
 
+            if (r.isPolePosition()) {
+                tevePole = true;
+            }
+
             String valorExibicao = r.isNc() ? "NC" : String.valueOf(pontos);
             dto.getResultadosPorBateria().put(r.getBateria().getNome(), valorExibicao);
         }
 
         dto.setTotalPontos(total);
         dto.setRecebeuPontoExtra(ganhouExtras);
+        dto.setPolePosition(tevePole);
         return dto;
     }
 

@@ -23,6 +23,8 @@ public class ResultadoBateria {
 
     private Integer pontos;
 
+    private boolean polePosition = false;
+
     private Integer pontosExtras = 0;
 
     private boolean nc;
@@ -77,4 +79,7 @@ public class ResultadoBateria {
 
     public boolean isNc() { return nc; }
     public void setNc(boolean nc) { this.nc = nc; }
+
+    public boolean isPolePosition() { return polePosition; }
+    public void setPolePosition(boolean polePosition) { this.polePosition = polePosition; }
 }

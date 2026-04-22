@@ -39,6 +39,7 @@ public class ResultadoBateriaController {
             // Atualiza os dados do registro existente para evitar duplicatas
             existente.setPosicaoChegada(novoResultado.getPosicaoChegada());
             existente.setNc(novoResultado.isNc());
+            existente.setPolePosition(novoResultado.isPolePosition());
 
             existente.setPontosExtras(novoResultado.getPontosExtras());
 

@@ -407,10 +407,19 @@ function abrirResultadosBateria(id, nome) {
 async function carregarOpcoesPilotos() {
     const select = document.getElementById('select-piloto-resultado');
     try {
-        const pilotosValidos = await apiFetch(`/pilotos/bateria/${bateriaAtivaId}`);
+        const [pilotosValidos, resultadosExistentes] = await Promise.all([
+            apiFetch(`/pilotos/bateria/${bateriaAtivaId}`),
+            apiFetch('/resultados')
+        ]);
+
+        const idsPilotosComResultado = resultadosExistentes
+            .filter(r => r.bateria?.id === bateriaAtivaId)
+            .map(r => r.piloto?.id);
+
+        const pilotosFiltrados = pilotosValidos.filter(p => !idsPilotosComResultado.includes(p.id));
 
         select.innerHTML = '<option value="">Selecione o piloto...</option>';
-        pilotosValidos.forEach(p => {
+        pilotosFiltrados.forEach(p => {
             select.insertAdjacentHTML('beforeend', `<option value="${p.id}">Kart #${p.numeroKart} - ${p.nome} (${p.categoria.nome})</option>`);
         });
     } catch (e) { console.error(e); }
@@ -421,6 +430,7 @@ async function salvarResultado(e) {
     const pilotoId = document.getElementById('select-piloto-resultado').value;
     const posicao = document.getElementById('posicao-chegada').value;
     const marcouNc = document.getElementById('checkbox-nc').checked;
+    const marcouPole = document.getElementById('checkbox-pole').checked;
     const extras = document.getElementById('pontos-extras').value;
 
     const dados = {
@@ -428,6 +438,7 @@ async function salvarResultado(e) {
         piloto: { id: parseInt(pilotoId) },
         posicaoChegada: parseInt(posicao),
         nc: marcouNc,
+        polePosition: marcouPole,
         pontosExtras: parseInt(extras) || 0 // Trata campos vazios/NaN
     };
 
@@ -435,6 +446,7 @@ async function salvarResultado(e) {
         await apiFetch('/resultados', { method: 'POST', body: JSON.stringify(dados) });
         document.getElementById('posicao-chegada').value = '';
         document.getElementById('checkbox-nc').checked = false;
+        document.getElementById('checkbox-pole').checked = false;
         document.getElementById('pontos-extras').value = '0';
         carregarResultados();
     } catch (e) { alert('Erro ao salvar resultado.'); }
@@ -451,6 +463,7 @@ async function carregarResultados() {
         tabelaCorpo.innerHTML = '';
         if (filtrados.length === 0) {
             tabelaCorpo.innerHTML = `<tr><td colspan="5" class="carregando">Sem resultados lançados.</td></tr>`;
+            carregarOpcoesPilotos(); // Atualiza dropdown mesmo se vazio
             return;
         }
 
@@ -459,12 +472,14 @@ async function carregarResultados() {
                 <tr>
                     <td><strong>${r.posicaoChegada}º</strong></td>
                     <td>🏎️ ${r.piloto?.numeroKart || '-'}</td>
-                    <td>${r.piloto?.nome || '-'}</td>
+                    <td>${r.piloto?.nome || '-'} ${r.polePosition ? '⏱️' : ''}</td>
                     <td><span class="badge-categoria">${r.piloto?.categoria?.nome || '-'}</span></td>
                     <td><strong>${r.pontos != null ? r.pontos : '-'} pts</strong></td>
                 </tr>`;
             tabelaCorpo.insertAdjacentHTML('beforeend', linha);
         });
+
+        carregarOpcoesPilotos(); // Atualiza o dropdown para remover pilotos já registrados
     } catch (e) { console.error(e); }
 }
 
@@ -600,14 +615,16 @@ function gerarHtmlTabelaCategoria(nomeCat, pilotos, nomesBaterias) {
             <tr>
                 <td><strong style="font-size: 1.1em;">${medalha}</strong></td>
                 <td>${p.piloto.numeroKart}</td>
-                <td><strong>${p.piloto.nome}</strong></td>
+                <td><strong>${p.piloto.nome}</strong> ${p.polePosition ? '⏱️' : ''}</td>
                 ${colunasBatData}
                 <td class="col-total" style="color: ${houveEmpate ? 'red' : 'inherit'}; font-weight: ${houveEmpate ? 'bold' : 'normal'};">
                     ${p.totalPontos} pts ${p.recebeuPontoExtra ? '<span style="color: red; font-weight: bold;">*</span>' : ''}
                 </td>
                 <td class="no-print col-ajuste">
+                    ${houveEmpate ? `
                     <button class="btn-ajuste" onclick="moverPosicaoMista('${nomeCat}', ${idx}, -1)">🔼</button>
                     <button class="btn-ajuste" onclick="moverPosicaoMista('${nomeCat}', ${idx}, 1)">🔽</button>
+                    ` : ''}
                 </td>
             </tr>`;
     });

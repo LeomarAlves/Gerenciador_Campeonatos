@@ -462,7 +462,7 @@ async function carregarResultados() {
 
         tabelaCorpo.innerHTML = '';
         if (filtrados.length === 0) {
-            tabelaCorpo.innerHTML = `<tr><td colspan="5" class="carregando">Sem resultados lançados.</td></tr>`;
+            tabelaCorpo.innerHTML = `<tr><td colspan="6" class="carregando">Sem resultados lançados.</td></tr>`;
             carregarOpcoesPilotos(); // Atualiza dropdown mesmo se vazio
             return;
         }
@@ -475,12 +475,24 @@ async function carregarResultados() {
                     <td>${r.piloto?.nome || '-'} ${r.polePosition ? '⏱️' : ''}</td>
                     <td><span class="badge-categoria">${r.piloto?.categoria?.nome || '-'}</span></td>
                     <td><strong>${r.pontos != null ? r.pontos : '-'} pts</strong></td>
+                    <td>
+                        <button class="btn" style="background-color: #c0392b; color: white; padding: 2px 8px; font-size: 0.8em;" onclick="excluirResultado(${r.id})">🗑️ Remover</button>
+                    </td>
                 </tr>`;
             tabelaCorpo.insertAdjacentHTML('beforeend', linha);
         });
 
         carregarOpcoesPilotos(); // Atualiza o dropdown para remover pilotos já registrados
     } catch (e) { console.error(e); }
+}
+
+async function excluirResultado(resultadoId) {
+    if (!confirm('Tem certeza que deseja remover este piloto desta bateria?')) return;
+    try {
+        await apiFetch('/resultados/' + resultadoId, { method: 'DELETE' });
+        carregarResultados();
+        carregarOpcoesPilotos();
+    } catch (e) { alert('Erro ao excluir resultado.'); }
 }
 
 async function calcularPontosBateria() {

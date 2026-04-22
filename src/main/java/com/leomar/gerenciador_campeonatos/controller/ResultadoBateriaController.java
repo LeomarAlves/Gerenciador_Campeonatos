@@ -60,4 +60,10 @@ public class ResultadoBateriaController {
         pontuacaoService.calcularPontosDaBateria(bateriaId, tabelaId);
         return ResponseEntity.ok("Pontos calculados com sucesso!");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        resultadoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

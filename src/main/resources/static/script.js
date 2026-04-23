@@ -216,7 +216,7 @@ async function salvarCategoria(e) {
 
 function abrirCategoria(id, nome) {
     categoriaAtivaId = id;
-    document.getElementById('titulo-categoria-ativa').innerText = `🏎️ Categoria: ${nome}`;
+    document.getElementById('titulo-categoria-ativa').innerText = `Categoria: ${nome}`;
     mostrarTela('tela-pilotos');
     carregarPilotos();
 }
@@ -242,7 +242,7 @@ async function carregarPilotos() {
         pilotosFiltrados.forEach(p => {
             const linha = `
                 <tr>
-                    <td>🏎️ <strong>${p.numeroKart}</strong></td>
+                    <td><strong>${p.numeroKart}</strong></td>
                     <td>${p.nome}</td>
                     <td>
                         <button class="btn btn-alerta" onclick="prepararEdicao(${p.id}, '${p.nome}', '${p.numeroKart}')">✏️ Editar</button>
@@ -479,7 +479,7 @@ async function carregarResultados() {
             const linha = `
                 <tr>
                     <td><strong>${r.posicaoChegada}º</strong></td>
-                    <td>🏎️ ${r.piloto?.numeroKart || '-'}</td>
+                    <td>${r.piloto?.numeroKart || '-'}</td>
                     <td>${r.piloto?.nome || '-'} ${r.polePosition ? '⏱️' : ''}</td>
                     <td><span class="badge-categoria">${r.piloto?.categoria?.nome || '-'}</span></td>
                     <td><strong>${r.pontos != null ? r.pontos : '-'} pts</strong></td>

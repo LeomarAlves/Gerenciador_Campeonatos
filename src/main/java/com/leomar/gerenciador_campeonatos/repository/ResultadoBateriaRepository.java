@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ResultadoBateriaRepository extends JpaRepository<ResultadoBateria, Long> {
-    // O método que o nosso PontuacaoService usa!
+    // Recupera resultados de uma bateria específica ordenados por posição de chegada
     List<ResultadoBateria> findByBateriaIdOrderByPosicaoChegadaAsc(Long bateriaId);
     List<ResultadoBateria> findByBateriaCampeonatoId(Long campeonatoId);
     List<ResultadoBateria> findByBateriaIdIn(List<Long> bateriaIds);

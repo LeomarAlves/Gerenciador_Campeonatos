@@ -8,9 +8,6 @@ import java.util.List;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
-
-    // O Spring é tão inteligente que só de ler este nome em inglês,
-    // ele já sabe criar o comando SQL (SELECT * FROM categoria WHERE campeonato_id = ?)
+    // Busca categorias associadas a um campeonato
     List<Categoria> findByCampeonatoId(Long campeonatoId);
-
 }

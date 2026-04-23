@@ -15,18 +15,18 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
 
-    // A MANTIDA: A categoria ainda sabe de qual campeonato ela faz parte
+    // Relacionamento com o campeonato ao qual a categoria pertence
     @ManyToOne
     @JoinColumn(name = "campeonato_id", nullable = false)
     private Campeonato campeonato;
 
-    // A NOVA "FECHADURA": Ligando a Categoria ao GrupoGrid (O Erro estava aqui!)
+    // Associação com o GrupoGrid para agrupamento de categorias em pista
     @ManyToOne
     @JoinColumn(name = "grupo_grid_id")
-    @JsonIgnore // Evita aquele loop infinito do JSON que já conhecemos
+    @JsonIgnore // Evita recursividade no mapeamento JSON
     private GrupoGrid grupoGrid;
 
-    // A tabela de pontos que havíamos criado antes
+    // Regra de pontuação vinculada à categoria
     @ManyToOne
     @JoinColumn(name = "tabela_pontuacao_id")
     private TabelaPontuacao tabelaPontuacao;

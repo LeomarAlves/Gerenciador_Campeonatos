@@ -44,11 +44,11 @@ public class PontuacaoService {
         for (int i = 0; i < resultados.size(); i++) {
             ResultadoBateria resultado = resultados.get(i);
 
-            // Pega o ponto extra apenas 1 vez (protegido contra null)
+            // Recupera pontos extras (bônus/penalizações)
             int extras = (resultado.getPontosExtras() != null) ? resultado.getPontosExtras() : 0;
 
             if (resultado.isNc()) {
-                // NC zera a posição, mas mantém os extras
+                // Caso não complete (NC), o piloto recebe apenas os pontos extras
                 resultado.setPontos(extras);
                 continue;
             }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pilotos")
-@CrossOrigin(origins = "*") // Liberando para o nosso futuro Frontend!
+@CrossOrigin(origins = "*")
 public class PilotoController {
 
     private final PilotoRepository pilotoRepository;
@@ -24,12 +24,13 @@ public class PilotoController {
         this.bateriaRepository = bateriaRepository;
     }
 
-    // GET: Lista todos os pilotos
+    // Listagem de todos os pilotos cadastrados
     @GetMapping
     public List<Piloto> listarTodos() {
         return pilotoRepository.findAll();
     }
 
+    // Listagem de pilotos aptos para uma bateria específica (baseado nas categorias da bateria)
     @GetMapping("/bateria/{bateriaId}")
     public List<Piloto> listarPorBateria(@PathVariable Long bateriaId) {
         return bateriaRepository.findById(bateriaId)
@@ -37,31 +38,29 @@ public class PilotoController {
                 .orElse(Collections.emptyList());
     }
 
-    // POST: Cadastra um novo piloto
+    // Cadastro de um novo piloto
     @PostMapping
     public ResponseEntity<Piloto> criarPiloto(@RequestBody Piloto novoPiloto) {
         Piloto pilotoSalvo = pilotoRepository.save(novoPiloto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pilotoSalvo);
     }
 
-    // GET: Busca um piloto específico pelo ID
+    // Busca detalhada de um piloto por ID
     @GetMapping("/{id}")
     public ResponseEntity<Piloto> buscarPorId(@PathVariable Long id) {
         return pilotoRepository.findById(id)
                 .map(piloto -> ResponseEntity.ok().body(piloto))
                 .orElse(ResponseEntity.notFound().build());
     }
-    // PUT: Atualiza os dados de um piloto existente
+    // Atualização de dados de um piloto existente
     @PutMapping("/{id}")
     public ResponseEntity<Piloto> atualizarPiloto(@PathVariable Long id, @RequestBody Piloto pilotoAtualizado) {
         return pilotoRepository.findById(id)
                 .map(pilotoExistente -> {
-                    // Atualiza os dados com o que veio do Frontend
                     pilotoExistente.setNome(pilotoAtualizado.getNome());
                     pilotoExistente.setNumeroKart(pilotoAtualizado.getNumeroKart());
                     pilotoExistente.setCategoria(pilotoAtualizado.getCategoria());
 
-                    // Salva a alteração
                     Piloto pilotoSalvo = pilotoRepository.save(pilotoExistente);
                     return ResponseEntity.ok().body(pilotoSalvo);
                 })

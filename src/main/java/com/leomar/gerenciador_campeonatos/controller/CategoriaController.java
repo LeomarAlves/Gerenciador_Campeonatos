@@ -19,7 +19,7 @@ public class CategoriaController {
         this.categoriaRepository = categoriaRepository;
     }
 
-    // ATENÇÃO AQUI: Mudamos a rota para /api/categorias/campeonato/1
+    // Listagem de categorias vinculadas a um campeonato específico
     @GetMapping("/campeonato/{campeonatoId}")
     public List<Categoria> listarPorCampeonato(@PathVariable Long campeonatoId) {
         return categoriaRepository.findByCampeonatoId(campeonatoId);

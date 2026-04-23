@@ -16,12 +16,12 @@ public class Bateria {
     private String nome;
     private LocalDateTime dataHora;
 
-    // MANTIDO: A bateria continua sabendo qual é o seu campeonato
+    // Relacionamento com o campeonato ao qual a bateria pertence
     @ManyToOne
     @JoinColumn(name = "campeonato_id", nullable = false)
     private Campeonato campeonato;
 
-    // A CORREÇÃO ESTÁ AQUI: Removemos o 'nullable = false'
+    // Relacionamento opcional com um grupo de grid específico
     @ManyToOne
     @JoinColumn(name = "grupo_grid_id")
     @JsonIgnore

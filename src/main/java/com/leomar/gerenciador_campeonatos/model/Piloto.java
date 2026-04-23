@@ -12,7 +12,9 @@ public class Piloto {
     private Long id;
 
     private String nome;
-    private Integer numeroKart;
+
+    @Column(name = "numero_texto")
+    private String numeroKart;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
@@ -42,11 +44,11 @@ public class Piloto {
         this.categoria = categoria;
     }
 
-    public Integer getNumeroKart() {
+    public String getNumeroKart() {
         return numeroKart;
     }
 
-    public void setNumeroKart(Integer numeroKart) {
+    public void setNumeroKart(String numeroKart) {
         this.numeroKart = numeroKart;
     }
 

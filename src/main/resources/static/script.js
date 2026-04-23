@@ -245,7 +245,7 @@ async function carregarPilotos() {
                     <td>🏎️ <strong>${p.numeroKart}</strong></td>
                     <td>${p.nome}</td>
                     <td>
-                        <button class="btn btn-alerta" onclick="prepararEdicao(${p.id}, '${p.nome}', ${p.numeroKart})">✏️ Editar</button>
+                        <button class="btn btn-alerta" onclick="prepararEdicao(${p.id}, '${p.nome}', '${p.numeroKart}')">✏️ Editar</button>
                         <button class="btn" style="background-color: #c0392b; color: white;" onclick="excluirPiloto(${p.id})">🗑️ Excluir</button>
                     </td>
                 </tr>`;
@@ -268,7 +268,7 @@ async function salvarPiloto(e) {
     const id = document.getElementById('edit-piloto-id').value;
     const dados = {
         nome: document.getElementById('nome-piloto').value,
-        numeroKart: parseInt(document.getElementById('numero-piloto').value),
+        numeroKart: document.getElementById('numero-piloto').value.trim(),
         categoria: { id: categoriaAtivaId }
     };
 

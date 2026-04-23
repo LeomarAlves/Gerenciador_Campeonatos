@@ -77,4 +77,4 @@ src/main/resources/
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
-Desenvolvido por [Leomar](https://github.com/leomar)
+Desenvolvido por [LeomarAlves](https://github.com/LeomarAlves)
